@@ -2,30 +2,24 @@
 # By: Amrit Hariharan
 # Python comment parser and todo list generator
 
-# TODO:
-# - get it to work with block comments
-#	- use regex maybe?
-# - markdown output
-# - optional arg2 (output filename)
-# - turn this into a VSCode extension
-
 from sys import argv
 
 if __name__ == "__main__":
 
+	output_file = ''
 	# Check arguments
-	print(argv)
-	if (len(argv) != 3):
+	if (len(argv) == 2):
+		output_file = 'output.md'
+	elif (len(argv) == 3):
+		output_file = argv[2] + '.md'
+	else:
 		print("Usage: python todoer.py INPUT_FILE OUTPUT_FILE")
-	
-	# Open file
-	output_file = open(argv[2], 'w')
 
 	# Dictionary of all todo items
 	keywords = [
-		'TODO',
-		'FIXME',
-		'WTF'
+		'TODO:',
+		'FIXME:',
+		'WTF:'
 	] # Add keywords here
 	todos = dict((keywords[i], []) for i in range(len(keywords)))
 
@@ -41,9 +35,8 @@ if __name__ == "__main__":
 		'lhs': '--'		# Haskell
 	}
 	filename = argv[1]
-	print(filename)
 	comment = comment_types[filename[filename.find('.')+1:]]
-	print('comment syntax: %s this is a line comment' % comment)
+	#print('comment syntax: %s this is a line comment' % comment)
 
 	# Go through the file line by line
 	line_num = 1
@@ -52,13 +45,16 @@ if __name__ == "__main__":
 			pos = line.find(comment)
 			if pos != -1:
 				for tag in keywords:
-					if tag in line[pos:-1]:
-						todos[tag].append(line[pos+len(comment):-1])
+					tag_pos = line.find(tag)
+					if tag_pos != -1:
+						todos[tag].append((line_num, line[tag_pos+len(tag):-1]))
 			line_num += 1
 
 	# Print out all relevant comments
+	print('# Todo list for `%s`\n---' % filename, file=open(output_file, 'w'))
 	for tag in keywords:
 		if todos[tag]:
-			print('%s:' % tag)
+			print('## %s' % tag, file=open(output_file, 'a'))
 			for line in todos[tag]:
-				print('\t%s' % line)
+				print('- [ ] line %d: %s' % (line[0], line[1]), file=open(output_file, 'a'))
+			print('---', file=open(output_file, 'a'))
