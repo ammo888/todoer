@@ -51,10 +51,10 @@ if __name__ == "__main__":
 			line_num += 1
 
 	# Print out all relevant comments
-	print('# Todo list for `%s`\n---' % filename, file=open(output_file, 'w'))
+	print('# Todo list for `%s`\n-----' % filename, file=open(output_file, 'w'))
 	for tag in keywords:
 		if todos[tag]:
 			print('## %s' % tag, file=open(output_file, 'a'))
 			for line in todos[tag]:
 				print('- [ ] line %d: %s' % (line[0], line[1]), file=open(output_file, 'a'))
-			print('---', file=open(output_file, 'a'))
+			print('-----', file=open(output_file, 'a'))
