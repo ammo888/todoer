@@ -4,6 +4,14 @@
 
 todoer is a python script that takes your code as an input, parses it looking for comments that contain predefined tags such as `TODO:` or `FIXME:` and generates a todo list of these comments.
 
+## Usage
+
+```bash
+$ python todoer.py INPUT_FILE (OUTPUT_FILE.md)
+```
+
+if an output filename is not specified, todoer will output to `output.md`
+
 ## Example
 
 It takes a file like the one below:
@@ -35,6 +43,10 @@ and outputs the following markdown file.
 - [ ] line 9:  this program does jack shit
 -----
 ```
+
+## Todo:
+
+- [ ] line numbers are one off
 
 ## Wishlist
 
