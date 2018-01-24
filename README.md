@@ -45,6 +45,26 @@ and outputs the following markdown file.
 -----
 ```
 
+## Supported Languages
+
+- C++
+- C
+- Java
+- JavaScript
+- Python
+- Bash shell scripts
+- Haskell
+
+If you want to use this with a language that isn't on this list, just add the language file extension and its line comment syntax (eg. `'cpp': '//'`) to the `comment_types` dictionary on line 33.
+
+## Supported Tags
+
+- TODO:
+- FIXME:
+- WTF:
+
+**IMPORTANT:** the program currently requires you to have a `:` after your tag for it to be recognised. This can be changed and more tags added by altering the `keywords` list on line 25.
+
 ## Todo
 
 ## Wishlist

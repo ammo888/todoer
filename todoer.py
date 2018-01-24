@@ -33,7 +33,7 @@ if __name__ == "__main__":
 	comment_types = {
 		'cpp': '//', 	# C++
 		'c': '//',		# C
-		'java': '//',	# JavaScript
+		'java': '//',	# Java
 		'js': '//',		# JavaScript
 		'py': '#',		# Python
 		'sh': '#',		# Bash shell scripts
