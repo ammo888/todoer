@@ -2,6 +2,7 @@
 # By: Amrit Hariharan
 # Python comment parser and todo list generator
 
+import sys
 from sys import argv
 
 if __name__ == "__main__":
@@ -11,9 +12,14 @@ if __name__ == "__main__":
 	if (len(argv) == 2):
 		output_file = 'output.md'
 	elif (len(argv) == 3):
-		output_file = argv[2] + '.md'
+		output_file = argv[2]
+		if output_file[output_file.find('.'):] != '.md':
+			print("Usage: $ python todoer.py INPUT_FILE (OUTPUT_FILE.md)")
+			sys.exit(0)
+
 	else:
-		print("Usage: python todoer.py INPUT_FILE OUTPUT_FILE")
+		print("Usage: $ python todoer.py INPUT_FILE (OUTPUT_FILE.md)")
+		sys.exit(0)
 
 	# Dictionary of all todo items
 	keywords = [
@@ -58,3 +64,5 @@ if __name__ == "__main__":
 			for line in todos[tag]:
 				print('- [ ] line %d: %s' % (line[0], line[1]), file=open(output_file, 'a'))
 			print('-----', file=open(output_file, 'a'))
+	
+	print('todo list for %s saved in %s' % (filename, output_file))
