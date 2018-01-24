@@ -18,6 +18,7 @@ It takes a file like the one below:
 
 ```c++
 // comment pt 1
+//
 
 using namespace std;
 
@@ -44,9 +45,7 @@ and outputs the following markdown file.
 -----
 ```
 
-## Todo:
-
-- [ ] line numbers are one off
+## Todo
 
 ## Wishlist
 
