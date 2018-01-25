@@ -2,24 +2,17 @@
 # By: Amrit Hariharan
 # Python comment parser and todo list generator
 
-import sys
-from sys import argv
+import os
+import re
+import argparse
 
 if __name__ == "__main__":
-
-	output_file = ''
-	# Check arguments
-	if (len(argv) == 2):
-		output_file = 'output.md'
-	elif (len(argv) == 3):
-		output_file = argv[2]
-		if output_file[output_file.find('.'):] != '.md':
-			print("Usage: $ python todoer.py INPUT_FILE (OUTPUT_FILE.md)")
-			sys.exit(0)
-
-	else:
-		print("Usage: $ python todoer.py INPUT_FILE (OUTPUT_FILE.md)")
-		sys.exit(0)
+	parser = argparse.ArgumentParser(description='Parse input file')
+	parser.add_argument('INPUT_FILE', help="input source code")
+	parser.add_argument('OUTPUT_FILE', nargs="?", default='output.md', help="output markdown file")
+	args = parser.parse_args()
+	INPUT_FILE = args.INPUT_FILE
+	OUTPUT_FILE = args.OUTPUT_FILE
 
 	# Dictionary of all todo items
 	keywords = [
@@ -27,42 +20,42 @@ if __name__ == "__main__":
 		'FIXME:',
 		'WTF:'
 	] # Add keywords here
-	todos = dict((keywords[i], []) for i in range(len(keywords)))
+	key_patterns = '|'.join(keywords)
+	todos = {k : [] for k in keywords}
 
 	# Find out what comment syntax was used
 	comment_types = {
-		'cpp': '//', 	# C++
-		'c': '//',		# C
-		'java': '//',	# Java
-		'js': '//',		# JavaScript
-		'py': '#',		# Python
-		'sh': '#',		# Bash shell scripts
-		'hs': '--',		# Haskell
-		'lhs': '--'		# Haskell
+		'.cpp': '//', 	# C++
+		'.c': '//',		# C
+		'.java': '//',	# Java
+		'.js': '//',		# JavaScript
+		'.py': '#',		# Python
+		'.sh': '#',		# Bash shell scripts
+		'.hs': '--',		# Haskell
+		'.lhs': '--'		# Haskell
 	}
-	filename = argv[1]
-	comment = comment_types[filename[filename.find('.')+1:]]
-	#print('comment syntax: %s this is a line comment' % comment)
+
+	name, ext = os.path.splitext(INPUT_FILE)
+	comment_type = comment_types[ext]
+	print('comment syntax: %s this is a line comment' % comment_type)
 
 	# Go through the file line by line
-	line_num = 1
-	with open(argv[1], 'r') as f:
-		for line in f:
-			pos = line.find(comment)
-			if pos != -1:
-				for tag in keywords:
-					tag_pos = line.find(tag)
-					if tag_pos != -1:
-						todos[tag].append((line_num, line[tag_pos+len(tag):-1]))
-			line_num += 1
+	pattern = re.compile(r'%s.*(%s)(.*)' % (comment_type, key_patterns))
+	with open(INPUT_FILE, 'r') as f:
+		for line_num, line in enumerate(f,1):
+			match = re.search(pattern, line)
+			if match:
+				tag = match.group(1)
+				comment = match.group(2)
+				todos[tag].append((line_num, comment))
 
 	# Print out all relevant comments
-	print('# Todo list for `%s`\n-----' % filename, file=open(output_file, 'w'))
+	print('# Todo list for `%s`\n-----' % INPUT_FILE, file=open(OUTPUT_FILE, 'w'))
 	for tag in keywords:
 		if todos[tag]:
-			print('## %s' % tag, file=open(output_file, 'a'))
+			print('## %s' % tag, file=open(OUTPUT_FILE, 'a'))
 			for line in todos[tag]:
-				print('- [ ] line %d: %s' % (line[0], line[1]), file=open(output_file, 'a'))
-			print('-----', file=open(output_file, 'a'))
-	
-	print('todo list for %s saved in %s' % (filename, output_file))
+				print('- [ ] line %d: %s' % (line[0], line[1]), file=open(OUTPUT_FILE, 'a'))
+			print('-----', file=open(OUTPUT_FILE, 'a'))
+
+	print('todo list for %s saved in %s' % (INPUT_FILE, OUTPUT_FILE))
