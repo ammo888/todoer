@@ -53,10 +53,11 @@ if __name__ == "__main__":
 	with open(OUTPUT_FILE, 'w') as f:
 		f.write('# Todo list for `%s`\n-----\n' % INPUT_FILE)
 		for tag in keywords:
-			if todos[tag]:
+			comments = todos[tag]
+			if comments:
 				f.write('## %s\n' % tag)
-				for line in todos[tag]:
-					f.write('- [ ] line %d: %s\n' % (line[0], line[1]))
+				for line_num, comment in comments:
+					f.write('- [ ] line %d:%s\n' % (line_num, comment))
 				f.write('-----\n')
 
 	print('todo list for %s saved in %s' % (INPUT_FILE, OUTPUT_FILE))
