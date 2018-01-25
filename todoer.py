@@ -1,5 +1,5 @@
 # TODOER
-# By: Amrit Hariharan
+# By: Amrit Hariharan, forked by Minh Nguyen
 # Python comment parser and todo list generator
 
 import os
@@ -28,11 +28,11 @@ if __name__ == "__main__":
 		'.cpp': '//', 	# C++
 		'.c': '//',		# C
 		'.java': '//',	# Java
-		'.js': '//',		# JavaScript
+		'.js': '//',	# JavaScript
 		'.py': '#',		# Python
 		'.sh': '#',		# Bash shell scripts
-		'.hs': '--',		# Haskell
-		'.lhs': '--'		# Haskell
+		'.hs': '--',	# Haskell
+		'.lhs': '--'	# Haskell
 	}
 
 	name, ext = os.path.splitext(INPUT_FILE)
@@ -50,12 +50,13 @@ if __name__ == "__main__":
 				todos[tag].append((line_num, comment))
 
 	# Print out all relevant comments
-	print('# Todo list for `%s`\n-----' % INPUT_FILE, file=open(OUTPUT_FILE, 'w'))
-	for tag in keywords:
-		if todos[tag]:
-			print('## %s' % tag, file=open(OUTPUT_FILE, 'a'))
-			for line in todos[tag]:
-				print('- [ ] line %d: %s' % (line[0], line[1]), file=open(OUTPUT_FILE, 'a'))
-			print('-----', file=open(OUTPUT_FILE, 'a'))
+	with open(OUTPUT_FILE, 'w') as f:
+		f.write('# Todo list for `%s`\n-----\n' % INPUT_FILE)
+		for tag in keywords:
+			if todos[tag]:
+				f.write('## %s\n' % tag)
+				for line in todos[tag]:
+					f.write('- [ ] line %d: %s\n' % (line[0], line[1]))
+				f.write('-----\n')
 
 	print('todo list for %s saved in %s' % (INPUT_FILE, OUTPUT_FILE))
